@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f8fafc;
+  --bg-elevated: #ffffff;
+  --fg: #334155;
+  --fg-muted: #64748b;
+  --card: #ffffff;
+  --card-border: rgba(148, 163, 184, 0.2);
+  --border: rgba(148, 163, 184, 0.25);
+  --accent: #7dd3fc;
+  --accent-soft: #bae6fd;
+  --accent-muted: #0ea5e9;
+  --accent-emerald: #6ee7b7;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+}
+
+@theme inline {
+  --font-sans: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  font-weight: 400;
+}
+
+/* Shared keyframes */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes cart-badge-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  33% { transform: translateY(-6px) translateX(3px); }
+  66% { transform: translateY(3px) translateX(-3px); }
+}
+
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up var(--duration-slow) ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) ease-out forwards;
+}
+
+.animate-cart-badge-pop {
+  animation: cart-badge-pop 0.35s ease-out;
+}
+
+.animate-gradient-text {
+  background: linear-gradient(90deg, #0ea5e9, #2dd4bf, #0ea5e9);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-grid-pulse {
+  animation: grid-pulse 5s ease-in-out infinite;
+}
