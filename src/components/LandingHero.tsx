@@ -57,10 +57,10 @@ export function LandingHero() {
           style={{ animationDelay: "1200ms", animationFillMode: "both" }}
         >
           <Link
-            href="/products"
+            href="#how-it-works"
             className="inline-flex items-center justify-center rounded-xl px-8 py-3.5 text-sm font-medium text-white bg-sky-400/90 shadow-sm transition-all duration-300 hover:bg-sky-500/90 hover:shadow-md active:scale-[0.98]"
           >
-            Explore agents
+            How it works
           </Link>
           <Link
             href="/products"

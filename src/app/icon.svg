@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(16,16) scale(2.117) translate(-16,-16) translate(0,1.5)">
+  <!-- Cursor-style: subtle isometric cube (one visible face + edges) -->
+  <g stroke="url(#g)" stroke-width="0.8" opacity="0.7" fill="none">
+    <path d="M16 8 22 11.5v7L16 21.5 10 18v-7L16 8Z"/>
+    <path d="M16 8v6.5l6 3.5v-7L16 8Z"/>
+    <path d="M16 14.5 10 18v-7l6-3.5v6.5Z"/>
+  </g>
+  <!-- dots on each face -->
+  <g fill="url(#g)" opacity="0.65">
+    <!-- upper-left face: 20 dots, columns evenly spaced (same gap as left margin) -->
+    <circle cx="11.2" cy="11.88" r="0.38"/><circle cx="12.4" cy="11.18" r="0.38"/><circle cx="13.6" cy="10.48" r="0.38"/><circle cx="14.8" cy="9.78" r="0.38"/>
+    <circle cx="11.2" cy="12.96" r="0.38"/><circle cx="12.4" cy="12.27" r="0.38"/><circle cx="13.6" cy="11.57" r="0.38"/><circle cx="14.8" cy="10.87" r="0.38"/>
+    <circle cx="11.2" cy="14.05" r="0.38"/><circle cx="12.4" cy="13.35" r="0.38"/><circle cx="13.6" cy="12.65" r="0.38"/><circle cx="14.8" cy="11.95" r="0.38"/>
+    <circle cx="11.2" cy="15.13" r="0.38"/><circle cx="12.4" cy="14.43" r="0.38"/><circle cx="13.6" cy="13.73" r="0.38"/><circle cx="14.8" cy="13.03" r="0.38"/>
+    <circle cx="11.2" cy="16.22" r="0.38"/><circle cx="12.4" cy="15.52" r="0.38"/><circle cx="13.6" cy="14.82" r="0.38"/><circle cx="14.8" cy="14.12" r="0.38"/>
+    <!-- upper-right face: 2 dots like semicolon ":" -->
+    <circle cx="19" cy="12" r="0.5"/>
+    <circle cx="19" cy="14.5" r="0.5"/>
+    <!-- bottom face: 1 dot -->
+    <circle cx="16" cy="18.2" r="0.5"/>
+  </g>
+  </g>
+</svg>
