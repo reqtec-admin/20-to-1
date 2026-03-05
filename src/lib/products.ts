@@ -11,7 +11,7 @@ export interface Product {
 
 /**
  * Agent catalog for 20 to 1. Categories are job fields/sectors.
- * Descriptions reflect typical OpenClaw-trained skill sets: calling, emails,
+ * Descriptions reflect typical agent skill sets: calling, emails,
  * data collection, research, drafting, and workflow automation.
  */
 export const products: Product[] = [
@@ -21,7 +21,7 @@ export const products: Product[] = [
     slug: "real-estate-assistant",
     category: "Real Estate",
     description:
-      "Trained with OpenClaw for calling, email follow-up, and data collection. Qualifies inbound leads, schedules showings, drafts follow-up emails, and keeps listing information organized. Handles buyer/seller intake and property data so agents stay focused on closing deals.",
+      "Trained for calling, email follow-up, and data collection. Qualifies inbound leads, schedules showings, drafts follow-up emails, and keeps listing information organized. Handles buyer/seller intake and property data so agents stay focused on closing deals.",
     price: 89,
     image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=400&fit=crop",
     featured: true,
@@ -32,7 +32,7 @@ export const products: Product[] = [
     slug: "roofing-company-assistant",
     category: "Operations",
     description:
-      "OpenClaw-trained for job intake, data collection, and notifications. Captures job requests, gathers photos and on-site details, drafts estimates, and keeps homeowners updated via email and status notifications as crews are dispatched and work progresses.",
+      "Trained for job intake, data collection, and notifications. Captures job requests, gathers photos and on-site details, drafts estimates, and keeps homeowners updated via email and status notifications as crews are dispatched and work progresses.",
     price: 79,
     image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=400&fit=crop",
     featured: true,
@@ -45,7 +45,7 @@ export const products: Product[] = [
     description:
       "Trained for content drafting, research, and data summarization. Plans content calendars, drafts posts across channels, summarizes performance data, and organizes assets. Handles caption generation, hashtag research, and reporting so teams ship campaigns faster.",
     price: 129,
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=400&h=400&fit=crop",
     featured: true,
   },
   {
@@ -54,7 +54,7 @@ export const products: Product[] = [
     slug: "product-manager",
     category: "Product & Delivery",
     description:
-      "OpenClaw-trained for research synthesis, drafting, and stakeholder communication. Transforms raw feedback and tickets into prioritized backlogs, crisp PRDs, and status updates. Handles user feedback synthesis, release notes, and backlog grooming support.",
+      "Trained for research synthesis, drafting, and stakeholder communication. Transforms raw feedback and tickets into prioritized backlogs, crisp PRDs, and status updates. Handles user feedback synthesis, release notes, and backlog grooming support.",
     price: 149,
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop",
     featured: true,
@@ -76,7 +76,7 @@ export const products: Product[] = [
     slug: "software-architect",
     category: "Technical",
     description:
-      "OpenClaw-trained for research, drafting, and documentation. Organizes requirements, compares design options, drafts ADRs and system diagrams. Maintains technical glossaries and RFC summarization for senior engineers and architects.",
+      "Trained for research, drafting, and documentation. Organizes requirements, compares design options, drafts ADRs and system diagrams. Maintains technical glossaries and RFC summarization for senior engineers and architects.",
     price: 149,
     image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=400&fit=crop",
   },
@@ -96,7 +96,7 @@ export const products: Product[] = [
     slug: "marketing-manager",
     category: "Marketing",
     description:
-      "OpenClaw-trained for campaign tracking, drafting, and data summarization. Coordinates multi-channel campaigns end-to-end: tracks assets, deadlines, approvals; drafts internal comms and post-launch analysis. Handles channel briefs and launch checklists.",
+      "Trained for campaign tracking, drafting, and data summarization. Coordinates multi-channel campaigns end-to-end: tracks assets, deadlines, approvals; drafts internal comms and post-launch analysis. Handles channel briefs and launch checklists.",
     price: 129,
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop",
     featured: true,
@@ -117,7 +117,7 @@ export const products: Product[] = [
     slug: "customer-support-agent",
     category: "People & Support",
     description:
-      "OpenClaw-trained for ticket triage, knowledge-base lookup, and response drafting. Organizes tickets, proposes replies from knowledge bases, surfaces escalation summaries and trend themes. Helps support teams respond faster and flag product issues.",
+      "Trained for ticket triage, knowledge-base lookup, and response drafting. Organizes tickets, proposes replies from knowledge bases, surfaces escalation summaries and trend themes. Helps support teams respond faster and flag product issues.",
     price: 119,
     image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop",
     featured: true,
@@ -138,7 +138,7 @@ export const products: Product[] = [
     slug: "hr-recruiter",
     category: "People & Support",
     description:
-      "OpenClaw-trained for intake, drafting, and data organization. Captures role requirements, drafts job descriptions, organizes candidate profiles and interview scorecards. Handles pipeline status reporting and streamlines hiring workflows.",
+      "Trained for intake, drafting, and data organization. Captures role requirements, drafts job descriptions, organizes candidate profiles and interview scorecards. Handles pipeline status reporting and streamlines hiring workflows.",
     price: 79,
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=400&fit=crop",
   },
@@ -158,7 +158,7 @@ export const products: Product[] = [
     slug: "ecommerce-merchandiser",
     category: "Marketing",
     description:
-      "OpenClaw-trained for copy drafting, data surfacing, and summarization. Drafts product descriptions, proposes bundles and promotions, surfaces underperforming SKUs. Handles catalog hygiene checks and review summarization for online stores.",
+      "Trained for copy drafting, data surfacing, and summarization. Drafts product descriptions, proposes bundles and promotions, surfaces underperforming SKUs. Handles catalog hygiene checks and review summarization for online stores.",
     price: 89,
     image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop",
   },
@@ -178,7 +178,7 @@ export const products: Product[] = [
     slug: "seo-specialist",
     category: "Marketing",
     description:
-      "OpenClaw-trained for research, data organization, and copy suggestions. Pairs with SEO tools to organize keyword maps, propose on-page improvements, brief writers on intent and structure. Handles content gap summaries and meta copy suggestions.",
+      "Trained for research, data organization, and copy suggestions. Pairs with SEO tools to organize keyword maps, propose on-page improvements, brief writers on intent and structure. Handles content gap summaries and meta copy suggestions.",
     price: 99,
     image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&h=400&fit=crop",
   },
@@ -198,7 +198,7 @@ export const products: Product[] = [
     slug: "data-analyst",
     category: "Technical",
     description:
-      "OpenClaw-trained for question shaping, narrative drafting, and result explanation. Cleans up ad-hoc questions, suggests query shapes (no DB access), drafts slides and narratives around results. Handles metric definitions and experiment recap templates.",
+      "Trained for question shaping, narrative drafting, and result explanation. Cleans up ad-hoc questions, suggests query shapes (no DB access), drafts slides and narratives around results. Handles metric definitions and experiment recap templates.",
     price: 129,
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop",
   },
@@ -218,7 +218,7 @@ export const products: Product[] = [
     slug: "operations-coordinator",
     category: "Operations",
     description:
-      "OpenClaw-trained for checklist and playbook drafting, runbook lookup, and recap summaries. Centralizes workflows into checklists, playbooks, and daily recaps. Handles exception tracking and keeps operators aligned without living in spreadsheets.",
+      "Trained for checklist and playbook drafting, runbook lookup, and recap summaries. Centralizes workflows into checklists, playbooks, and daily recaps. Handles exception tracking and keeps operators aligned without living in spreadsheets.",
     price: 89,
     image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=400&fit=crop",
     featured: true,
@@ -249,7 +249,7 @@ export const products: Product[] = [
     slug: "insurance-claims-assistant",
     category: "Specialized",
     description:
-      "OpenClaw-trained for incident structuring, document checklists, and status drafting. Structures incident details, tracks required documents, summarizes claim status for internal and external audiences. Handles pattern and theme surfacing for claims teams.",
+      "Trained for incident structuring, document checklists, and status drafting. Structures incident details, tracks required documents, summarizes claim status for internal and external audiences. Handles pattern and theme surfacing for claims teams.",
     price: 119,
     image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=400&fit=crop",
   },
@@ -269,7 +269,7 @@ export const products: Product[] = [
     slug: "field-service-dispatcher",
     category: "Operations",
     description:
-      "OpenClaw-trained for job queue organization, briefing drafts, and customer notifications. Organizes job queues, summarizes site context, prepares technician briefs. Handles customer notification templates and end-of-day recap drafting for field teams.",
+      "Trained for job queue organization, briefing drafts, and customer notifications. Organizes job queues, summarizes site context, prepares technician briefs. Handles customer notification templates and end-of-day recap drafting for field teams.",
     price: 89,
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop",
   },
@@ -289,9 +289,9 @@ export const products: Product[] = [
     slug: "community-manager",
     category: "Marketing",
     description:
-      "OpenClaw-trained for engagement prompts, moderation summarization, and drafting. Supports communities with engagement ideas, moderation summaries, monthly health snapshots. Handles member feedback synthesis and announcement copy for online communities.",
+      "Trained for engagement prompts, moderation summarization, and drafting. Supports communities with engagement ideas, moderation summaries, monthly health snapshots. Handles member feedback synthesis and announcement copy for online communities.",
     price: 89,
-    image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=400&h=400&fit=crop",
   },
   {
     id: "technical-support-engineer",
@@ -309,7 +309,7 @@ export const products: Product[] = [
     slug: "onboarding-specialist",
     category: "People & Support",
     description:
-      "OpenClaw-trained for plan drafting, checklist creation, and feedback synthesis. Creates onboarding plans, tracks touchpoints, captures early new-hire feedback. Handles manager reminder prompts and first-90-day summaries for people teams.",
+      "Trained for plan drafting, checklist creation, and feedback synthesis. Creates onboarding plans, tracks touchpoints, captures early new-hire feedback. Handles manager reminder prompts and first-90-day summaries for people teams.",
     price: 79,
     image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop",
   },
@@ -329,7 +329,7 @@ export const products: Product[] = [
     slug: "partnerships-manager",
     category: "Sales & Growth",
     description:
-      "OpenClaw-trained for partner documentation, plan drafting, and pipeline summarization. Keeps partner programs organized with account notes, mutual action plans, exec-ready pipeline snapshots. Handles QBR narrative support and renewal/expansion prompts.",
+      "Trained for partner documentation, plan drafting, and pipeline summarization. Keeps partner programs organized with account notes, mutual action plans, exec-ready pipeline snapshots. Handles QBR narrative support and renewal/expansion prompts.",
     price: 129,
     image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=400&fit=crop",
   },

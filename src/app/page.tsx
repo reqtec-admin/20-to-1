@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { LandingPageGate } from "@/components/LandingPageGate";
 import { LandingHero } from "@/components/LandingHero";
 import { ProductCard } from "@/components/ProductCard";
 import { getFeaturedProducts } from "@/lib/products";
@@ -8,7 +7,7 @@ export default function HomePage() {
   const featured = getFeaturedProducts().slice(0, 3);
 
   return (
-    <LandingPageGate>
+    <>
       <LandingHero />
 
       <section className="relative border-t border-slate-200/80 bg-white/60 py-16 px-4 sm:px-6">
@@ -42,6 +41,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </LandingPageGate>
+    </>
   );
 }

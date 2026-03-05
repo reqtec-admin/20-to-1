@@ -20,14 +20,23 @@ export function PasscodeForm() {
   return (
     <section className="relative min-h-[88vh] flex flex-col items-center justify-center px-4 py-20 sm:px-6 bg-[var(--bg)]">
       <div className="w-full max-w-sm mx-auto">
-        <p className="text-center text-sm font-medium tracking-[0.2em] text-sky-600/90 mb-2">
+        <p className="text-center text-sm font-medium tracking-[0.2em] text-sky-600/90 mb-1">
           20 to 1
         </p>
+        <p className="text-center text-[0.7rem] font-semibold tracking-[0.28em] text-slate-400 uppercase mb-4">
+          Investors
+        </p>
+        <p className="text-slate-500 text-sm text-center leading-relaxed mb-6">
+          This space is reserved for investors and partners. Once you enter the
+          passcode, you&apos;ll get access to a focused view of our strategy,
+          traction, and roadmap.
+        </p>
+
         <h1 className="text-2xl font-semibold text-slate-700 text-center mb-2">
           Enter passcode
         </h1>
         <p className="text-slate-500 text-sm text-center mb-8 font-light">
-          Use the secret passcode to access the site.
+          Use the passcode provided to you to access the site.
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -51,6 +60,16 @@ export function PasscodeForm() {
             Continue
           </button>
         </form>
+        <p className="mt-8 text-sm text-center text-slate-500">
+          Interested?{" "}
+          <a
+            href="mailto:20to1@reqtec.com"
+            className="font-medium text-sky-600 hover:text-sky-500 underline underline-offset-4"
+          >
+            Request your Access Code
+          </a>
+          .
+        </p>
       </div>
     </section>
   );

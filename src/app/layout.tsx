@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
-import { PasscodeGate } from "@/components/PasscodeGate";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
@@ -28,11 +27,9 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CartProvider>
-            <PasscodeGate>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </PasscodeGate>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
           </CartProvider>
         </AuthProvider>
       </body>

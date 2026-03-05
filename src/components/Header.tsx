@@ -36,6 +36,12 @@ export function Header() {
             Agents
           </Link>
           <Link
+            href="/investors"
+            className="text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
+          >
+            Investor Relations
+          </Link>
+          <Link
             href="/cart"
             className="relative flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
           >

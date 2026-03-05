@@ -53,6 +53,13 @@ export default function CheckoutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold text-slate-700 animate-fade-in-up">Checkout</h1>
+      <div
+        className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 animate-fade-in-up"
+        style={{ animationDelay: "80ms", animationFillMode: "both" }}
+      >
+        Demo only: this checkout is for demonstration purposes only. No real payments will be
+        collected.
+      </div>
 
       <form onSubmit={handlePlaceOrder} className="mt-8 grid gap-8 lg:grid-cols-2">
         <div className="space-y-6">

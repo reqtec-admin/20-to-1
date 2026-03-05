@@ -1,25 +1,30 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { PasscodeForm } from "./PasscodeForm";
 
-export function PasscodeGate({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const router = useRouter();
+export function PasscodeGate({ children }: { children?: React.ReactNode }) {
   const { unlocked } = useAuth();
-  const [checking, setChecking] = useState(true);
 
-  useEffect(() => {
-    if (unlocked === null) return;
-    setChecking(false);
-    if (pathname !== "/" && !unlocked) {
-      router.replace("/");
-    }
-  }, [pathname, unlocked, router]);
+  if (unlocked === null) {
+    return (
+      <>      
 
-  if (checking || (pathname !== "/" && !unlocked)) {
-    return null;
+      <section className="min-h-[60vh] flex items-center justify-center bg-[var(--bg)]">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-sky-300 border-t-sky-600" />
+      </section>
+      </>
+    );
+  }
+
+  if (!unlocked) {
+    return (
+    <>
+
+    <PasscodeForm />
+    </>
+    )
+    ;
   }
 
   return <>{children}</>;

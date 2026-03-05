@@ -61,6 +61,9 @@ export default function ProductDetailPage() {
           <h1 className="mt-2 text-2xl font-semibold text-slate-700 sm:text-3xl">
             {product.name}
           </h1>
+          <p className="mt-3 inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
+            Coming soon
+          </p>
           <p className="mt-4 text-lg font-semibold text-slate-700">
             ${product.price.toFixed(2)}{" "}
             <span className="text-sm font-normal text-slate-400">/ month</span>

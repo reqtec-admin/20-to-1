@@ -18,12 +18,15 @@ export function Footer() {
             <Link href="/cart" className="transition-colors duration-200 hover:text-sky-600">
               Cart
             </Link>
-            <a href="#" className="transition-colors duration-200 hover:text-sky-600">
+            <a
+              href="mailto:20to1@reqtec.com"
+              className="transition-colors duration-200 hover:text-sky-600"
+            >
               Contact
             </a>
-            <a href="#" className="transition-colors duration-200 hover:text-sky-600">
+            <Link href="/privacy" className="transition-colors duration-200 hover:text-sky-600">
               Privacy
-            </a>
+            </Link>
           </nav>
         </div>
         <p className="mt-6 text-xs text-slate-400" suppressHydrationWarning>
