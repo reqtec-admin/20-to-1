@@ -4,6 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
+function upgradeLabel(upgrade: "advanced" | "premium" | null): string {
+  if (upgrade === "advanced") return "Advanced — Native Model";
+  if (upgrade === "premium") return "Premium — On Premise";
+  return "";
+}
+
+function proServiceLabel(pro: "silver" | "gold" | "platinum" | null): string {
+  if (pro === "silver") return "Silver";
+  if (pro === "gold") return "Gold";
+  if (pro === "platinum") return "Platinum";
+  return "";
+}
+
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, itemCount } = useCart();
 
@@ -34,9 +47,9 @@ export default function CartPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <ul className="divide-y divide-slate-200/80 border border-slate-200/80 rounded-2xl bg-white shadow-sm overflow-hidden">
-            {items.map(({ product, quantity }, i) => (
+            {items.map(({ id, product, quantity, upgrade, proService }, i) => (
               <li
-                key={product.id}
+                key={id}
                 className="flex gap-4 p-4 sm:p-6 transition-colors duration-200 hover:bg-slate-50/50 animate-fade-in-up"
                 style={{ animationDelay: `${80 + i * 50}ms`, animationFillMode: "both" }}
               >
@@ -60,6 +73,11 @@ export default function CartPage() {
                     <p className="text-sm text-slate-500">
                       ${product.price.toFixed(2)} / month
                     </p>
+                    {(upgrade || proService) && (
+                      <p className="text-xs text-slate-400 mt-1">
+                        {[upgradeLabel(upgrade), proServiceLabel(proService)].filter(Boolean).join(" · ")}
+                      </p>
+                    )}
                   </div>
                   <div className="flex items-center gap-3">
                     <input
@@ -68,16 +86,13 @@ export default function CartPage() {
                       max={99}
                       value={quantity}
                       onChange={(e) =>
-                        updateQuantity(
-                          product.id,
-                          Math.max(1, parseInt(e.target.value, 10) || 1)
-                        )
+                        updateQuantity(id, Math.max(1, parseInt(e.target.value, 10) || 1))
                       }
                       className="w-14 rounded-xl border border-slate-200 bg-white px-2 py-1 text-center text-sm text-slate-700 focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400/40"
                     />
                     <button
                       type="button"
-                      onClick={() => removeItem(product.id)}
+                      onClick={() => removeItem(id)}
                       className="text-sm text-red-500/90 transition-colors duration-200 hover:text-red-500"
                     >
                       Remove

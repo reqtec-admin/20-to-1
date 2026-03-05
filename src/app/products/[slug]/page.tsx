@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { getProductBySlug } from "@/lib/products";
+import type { UpgradeOption, ProServiceOption } from "@/lib/checkout-fees";
 import { useState } from "react";
 
 export default function ProductDetailPage() {
@@ -14,6 +15,10 @@ export default function ProductDetailPage() {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [upgradeExpanded, setUpgradeExpanded] = useState(false);
+  const [upgrade, setUpgrade] = useState<UpgradeOption>(null);
+  const [proServicesExpanded, setProServicesExpanded] = useState(false);
+  const [proService, setProService] = useState<ProServiceOption>(null);
 
   if (!product) {
     return (
@@ -28,7 +33,7 @@ export default function ProductDetailPage() {
 
   function handleAddToCart() {
     if (!product) return;
-    addItem(product, quantity);
+    addItem(product, quantity, upgrade, proService);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }
@@ -71,6 +76,119 @@ export default function ProductDetailPage() {
           <p className="mt-4 text-slate-500 font-light leading-relaxed">
             {product.description}
           </p>
+
+          {/* Upgrade options - expandable */}
+          <div className="mt-8 rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-sm">
+            <button
+              type="button"
+              onClick={() => setUpgradeExpanded((e) => !e)}
+              className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50/80 transition-colors"
+            >
+              <span className="text-lg font-semibold text-slate-700">Upgrade options</span>
+              <svg
+                className={`h-5 w-5 text-slate-400 transition-transform ${upgradeExpanded ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {upgradeExpanded && (
+              <div className="border-t border-slate-200/80 px-6 py-4 space-y-3">
+                <p className="text-sm text-slate-500 mb-3">Choose one upgrade (optional).</p>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="upgrade"
+                    checked={upgrade === "advanced"}
+                    onChange={() => setUpgrade("advanced")}
+                    className="mt-1 h-4 w-4 border-slate-300 text-sky-500 focus:ring-sky-400"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-slate-700 group-hover:text-sky-600">Advanced — Native Model</span>
+                    <p className="text-sm text-slate-500 mt-0.5">Dedicated model for extra security — $899 one-time fee.</p>
+                  </div>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="upgrade"
+                    checked={upgrade === "premium"}
+                    onChange={() => setUpgrade("premium")}
+                    className="mt-1 h-4 w-4 border-slate-300 text-sky-500 focus:ring-sky-400"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-slate-700 group-hover:text-sky-600">Premium — On Premise</span>
+                    <p className="text-sm text-slate-500 mt-0.5">Hardware and installation — $799 one-time fee.</p>
+                  </div>
+                </label>
+              </div>
+            )}
+          </div>
+
+          {/* Professional services - expandable */}
+          <div className="mt-4 rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-sm">
+            <button
+              type="button"
+              onClick={() => setProServicesExpanded((e) => !e)}
+              className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50/80 transition-colors"
+            >
+              <span className="text-lg font-semibold text-slate-700">Professional services</span>
+              <svg
+                className={`h-5 w-5 text-slate-400 transition-transform ${proServicesExpanded ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {proServicesExpanded && (
+              <div className="border-t border-slate-200/80 px-6 py-4 space-y-3">
+                <p className="text-sm text-slate-500 mb-3">Choose one (optional).</p>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="proService"
+                    checked={proService === "silver"}
+                    onChange={() => setProService("silver")}
+                    className="mt-1 h-4 w-4 border-slate-300 text-sky-500 focus:ring-sky-400"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-slate-700 group-hover:text-sky-600">Silver</span>
+                    <p className="text-sm text-slate-500 mt-0.5">Tailored assistance (with a human) for installation and setup over the phone — $159 one-time fee.</p>
+                  </div>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="proService"
+                    checked={proService === "gold"}
+                    onChange={() => setProService("gold")}
+                    className="mt-1 h-4 w-4 border-slate-300 text-sky-500 focus:ring-sky-400"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-slate-700 group-hover:text-sky-600">Gold</span>
+                    <p className="text-sm text-slate-500 mt-0.5">Multiple dedicated sessions for advanced training and setup — $299 one-time fee.</p>
+                  </div>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="proService"
+                    checked={proService === "platinum"}
+                    onChange={() => setProService("platinum")}
+                    className="mt-1 h-4 w-4 border-slate-300 text-sky-500 focus:ring-sky-400"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-slate-700 group-hover:text-sky-600">Platinum</span>
+                    <p className="text-sm text-slate-500 mt-0.5">Concierge on-site assistance. Only available in certain areas — $399 one-time reservation fee.</p>
+                  </div>
+                </label>
+              </div>
+            )}
+          </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <label className="flex items-center gap-2">

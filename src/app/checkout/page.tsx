@@ -3,11 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { getUpgradeFee, getProServiceFee } from "@/lib/checkout-fees";
 
 export default function CheckoutPage() {
-  const { items, subtotal, clearCart, itemCount } = useCart();
+  const { items, subtotal, clearCart } = useCart();
   const [placed, setPlaced] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const totalOneTime = items.reduce(
+    (sum, item) => sum + getUpgradeFee(item.upgrade) + getProServiceFee(item.proService),
+    0
+  );
 
   if (items.length === 0 && !placed) {
     return (
@@ -86,21 +92,53 @@ export default function CheckoutPage() {
         <div className="animate-fade-in-up" style={{ animationDelay: "200ms", animationFillMode: "both" }}>
           <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-700">Order summary</h2>
-            <ul className="mt-4 space-y-2 text-sm">
-              {items.map(({ product, quantity }) => (
-                <li key={product.id} className="flex justify-between">
-                  <span className="text-slate-500">
-                    {product.name} × {quantity}
-                  </span>
-                  <span className="font-medium text-slate-700">
-                    ${(product.price * quantity).toFixed(2)} / month
-                  </span>
+            <ul className="mt-4 space-y-3 text-sm">
+              {items.map(({ id, product, quantity, upgrade, proService }) => (
+                <li key={id} className="border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                  <div className="flex justify-between">
+                    <span className="text-slate-700 font-medium">{product.name} × {quantity}</span>
+                    <span className="font-medium text-slate-700">
+                      ${(product.price * quantity).toFixed(2)} / month
+                    </span>
+                  </div>
+                  {(upgrade || proService) && (
+                    <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0 text-xs text-slate-500">
+                      {upgrade && (
+                        <span>
+                          {upgrade === "advanced" ? "Advanced — Native Model" : "Premium — On Premise"}
+                          {" "}(+${getUpgradeFee(upgrade).toLocaleString()})
+                        </span>
+                      )}
+                      {proService && (
+                        <span>
+                          Pro: {proService.charAt(0).toUpperCase() + proService.slice(1)}
+                          {" "}(+${getProServiceFee(proService).toLocaleString()})
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
-            <div className="mt-4 flex justify-between border-t border-slate-200 pt-4 font-medium text-slate-700">
-              <span>Subtotal (per month)</span>
-              <span>${subtotal.toFixed(2)} / month</span>
+            <div className="mt-4 flex justify-between border-t border-slate-200 pt-4 text-sm">
+              <span className="text-slate-600">Subtotal (per month)</span>
+              <span className="font-medium text-slate-700">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="mt-4 flex flex-col gap-1 border-t border-slate-200 pt-4">
+              <div className="flex justify-between text-sm font-medium text-slate-700">
+                <span>Total one-time</span>
+                <span>${totalOneTime.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm font-medium text-slate-700">
+                <span>Total per month</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between border-t border-slate-200 pt-3 mt-1 text-base font-semibold text-slate-800">
+                <span>Total amount</span>
+                <span>
+                  ${totalOneTime.toLocaleString()} one-time + ${subtotal.toFixed(2)} / month
+                </span>
+              </div>
             </div>
             <p className="mt-2 text-xs text-slate-400">
               Demo only. No payment is processed.
