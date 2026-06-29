@@ -3,12 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { saveCartToSession } from "@/lib/cart-storage";
 import { getUpgradeFee, getProServiceFee } from "@/lib/checkout-fees";
+import { isDemoMode } from "@/lib/payment-config";
+
+const demoMode = isDemoMode();
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const [placed, setPlaced] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
 
   const totalOneTime = items.reduce(
     (sum, item) => sum + getUpgradeFee(item.upgrade) + getProServiceFee(item.proService),
@@ -46,6 +52,39 @@ export default function CheckoutPage() {
     );
   }
 
+  async function handleStripeCheckout(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      saveCartToSession(items);
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          items: items.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+            upgrade: item.upgrade,
+            proService: item.proService,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Unable to start checkout");
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to start checkout");
+      setLoading(false);
+    }
+  }
+
   function handlePlaceOrder(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -56,18 +95,22 @@ export default function CheckoutPage() {
     }, 600);
   }
 
+  const handleSubmit = demoMode ? handlePlaceOrder : handleStripeCheckout;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold text-slate-700 animate-fade-in-up">Checkout</h1>
-      <div
-        className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 animate-fade-in-up"
-        style={{ animationDelay: "80ms", animationFillMode: "both" }}
-      >
-        Demo only: this checkout is for demonstration purposes only. No real payments will be
-        collected.
-      </div>
+      {demoMode && (
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 animate-fade-in-up"
+          style={{ animationDelay: "80ms", animationFillMode: "both" }}
+        >
+          Demo only: this checkout is for demonstration purposes only. No real payments will be
+          collected.
+        </div>
+      )}
 
-      <form onSubmit={handlePlaceOrder} className="mt-8 grid gap-8 lg:grid-cols-2">
+      <form onSubmit={handleSubmit} className="mt-8 grid gap-8 lg:grid-cols-2">
         <div className="space-y-6">
           {[
             { id: "email", label: "Email", type: "email", placeholder: "you@example.com" },
@@ -83,6 +126,8 @@ export default function CheckoutPage() {
                 type={field.type}
                 required
                 placeholder={field.placeholder}
+                value={field.id === "email" ? email : undefined}
+                onChange={field.id === "email" ? (e) => setEmail(e.target.value) : undefined}
                 className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-700 placeholder:text-slate-400 transition-colors duration-200 focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400/40"
               />
             </div>
@@ -140,15 +185,32 @@ export default function CheckoutPage() {
                 </span>
               </div>
             </div>
-            <p className="mt-2 text-xs text-slate-400">
-              Demo only. No payment is processed.
-            </p>
+            {demoMode ? (
+              <p className="mt-2 text-xs text-slate-400">
+                Demo only. No payment is processed.
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-slate-500">
+                Secure payment powered by Stripe. Billing address collected at checkout.
+              </p>
+            )}
+            {error && (
+              <p className="mt-3 text-sm text-red-600" role="alert">
+                {error}
+              </p>
+            )}
             <button
               type="submit"
               disabled={loading}
               className="mt-6 w-full rounded-xl bg-sky-400 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-sky-500 disabled:opacity-70 active:scale-[0.99]"
             >
-              {loading ? "Placing order…" : "Place order"}
+              {loading
+                ? demoMode
+                  ? "Placing order…"
+                  : "Redirecting to Stripe…"
+                : demoMode
+                  ? "Place order"
+                  : "Pay with Stripe"}
             </button>
             <Link
               href="/cart"

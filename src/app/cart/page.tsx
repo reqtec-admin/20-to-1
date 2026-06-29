@@ -3,6 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { isDemoMode } from "@/lib/payment-config";
+
+const demoMode = isDemoMode();
 
 function upgradeLabel(upgrade: "advanced" | "premium" | null): string {
   if (upgrade === "advanced") return "Advanced — Native Model";
@@ -43,6 +46,15 @@ export default function CartPage() {
       <p className="mt-1 text-slate-500 font-light animate-fade-in-up" style={{ animationDelay: "50ms", animationFillMode: "both" }}>
         {itemCount} item(s)
       </p>
+
+      {demoMode && (
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 animate-fade-in-up"
+          style={{ animationDelay: "80ms", animationFillMode: "both" }}
+        >
+          Demo only: checkout is for demonstration purposes. No real payments will be collected.
+        </div>
+      )}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
@@ -117,11 +129,17 @@ export default function CartPage() {
               </span>
             </div>
             <p className="mt-2 text-xs text-slate-400">Tax calculated at checkout.</p>
+            {!demoMode && (
+              <p className="mt-3 flex items-center gap-2 text-xs text-slate-600">
+                <StripeMark />
+                Secure checkout with Stripe
+              </p>
+            )}
             <Link
               href="/checkout"
               className="mt-6 block w-full rounded-xl bg-sky-400 py-3 text-center text-sm font-medium text-white transition-all duration-200 hover:bg-sky-500 active:scale-[0.98]"
             >
-              Proceed to checkout
+              {demoMode ? "Proceed to checkout" : "Proceed to Stripe checkout"}
             </Link>
             <Link
               href="/products"
@@ -133,5 +151,22 @@ export default function CartPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function StripeMark() {
+  return (
+    <svg
+      aria-hidden
+      className="h-4 w-4 shrink-0"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13.3 10.2c0-.7.6-1 1.5-1 1.3 0 2.9.4 4.2 1.1V6.4c-1.4-.5-2.8-.8-4.2-.8-3.4 0-5.7 1.8-5.7 4.6 0 4.5 6.2 3.8 6.2 5.7 0 .8-.7 1.1-1.7 1.1-1.5 0-3.4-.6-4.9-1.4v3.9c1.7.7 3.3 1 5 1 3.5 0 5.9-1.7 5.9-4.7-.1-4.8-6.3-4-6.3-6.1z"
+        fill="#635BFF"
+      />
+    </svg>
   );
 }
