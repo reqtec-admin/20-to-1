@@ -1,0 +1,19 @@
+# Minimal Supabase config for local development.
+# Run `supabase start` then `supabase db reset` to apply migrations.
+
+project_id = "20-to-1"
+
+[auth]
+enabled = true
+# Allow email signups from the checkout flow.
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+# For local/demo convenience. In production, require confirmation.
+enable_confirmations = false
+
+# Project the org/agents claims into issued JWTs.
+[auth.hook.custom_access_token]
+enabled = true
+uri = "pg-functions://postgres/public/custom_access_token_hook"

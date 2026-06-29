@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/products";
+import { OwnedBadge } from "@/components/OwnedBadge";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -27,9 +28,12 @@ export function ProductCard({ product }: { product: Product }) {
         <p className="mt-2 line-clamp-2 text-sm text-slate-500 font-light">
           {product.description}
         </p>
-        <span className="mt-3 inline-flex w-fit items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
-          Coming soon
-        </span>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="inline-flex w-fit items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
+            Coming soon
+          </span>
+          <OwnedBadge slug={product.slug} />
+        </div>
         <p className="mt-auto pt-3 text-lg font-semibold text-slate-700">
           ${product.price.toFixed(2)}{" "}
           <span className="text-sm font-normal text-slate-400">/ month</span>
