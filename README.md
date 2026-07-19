@@ -53,3 +53,15 @@ npx vercel
 ```
 
 To set the passcode in production, add `NEXT_PUBLIC_PASSCODE` in the Vercel project **Settings → Environment Variables**.
+
+## Dependency updates (Renovate)
+
+This repo uses [Renovate](https://github.com/renovatebot/renovate) to open pull requests when npm dependencies are outdated or have known vulnerabilities. Configuration lives in `renovate.json`.
+
+### Enable Renovate on GitHub
+
+1. Install the [Mend Renovate GitHub App](https://github.com/apps/renovate) on the `reqtec-admin/20-to-1` organization or repository.
+2. Merge this repository's default branch so `renovate.json` is present — Renovate picks up config from the default branch.
+3. Renovate will scan `package.json` / `package-lock.json` on its schedule (weekly, Mondays before 06:00 UTC) and open grouped update PRs.
+
+Related packages are grouped (Next.js + `eslint-config-next`, React + types, Tailwind, TypeScript). Security patches are prioritized. CI runs `npm ci` and `npm run build` on every update PR.

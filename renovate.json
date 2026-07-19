@@ -1,0 +1,60 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":preserveSemverRanges",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "timezone": "UTC",
+  "schedule": ["before 6am on Monday"],
+  "prConcurrentLimit": 5,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on the first day of the month"]
+  },
+  "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "description": "Keep Next.js and its ESLint config on the same version",
+      "matchPackageNames": ["next", "eslint-config-next"],
+      "groupName": "nextjs monorepo"
+    },
+    {
+      "description": "Group React runtime and type packages",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "groupName": "react monorepo"
+    },
+    {
+      "description": "Group Tailwind CSS packages",
+      "matchPackageNames": ["tailwindcss", "@tailwindcss/postcss"],
+      "groupName": "tailwindcss"
+    },
+    {
+      "description": "Group TypeScript tooling",
+      "matchPackageNames": ["typescript", "@types/node"],
+      "groupName": "typescript"
+    },
+    {
+      "description": "Allow time for major Next.js releases to stabilize",
+      "matchPackageNames": ["next", "eslint-config-next"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "14 days"
+    },
+    {
+      "description": "Prioritize security fixes",
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": "!/^0/",
+      "vulnerabilityAlerts": {
+        "enabled": true
+      },
+      "labels": ["security"],
+      "prPriority": 10
+    }
+  ]
+}
