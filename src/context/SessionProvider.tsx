@@ -46,25 +46,48 @@ export function SessionProvider({
   const [orgId, setOrgId] = useState<string | null>(initialOrgId);
   const [ownedAgents, setOwnedAgents] = useState<string[]>(initialOwnedAgents);
 
-  // Keep client state in sync with server-rendered props (e.g. after a
-  // router.refresh() following provisioning at checkout).
+  // Sync entitlements from the server after refresh. Do not clobber a live
+  // client session with a transient null email (cookie/header race on login).
   useEffect(() => {
-    setEmail(initialEmail);
+    if (initialEmail !== null) {
+      setEmail(initialEmail);
+    }
     setOrgId(initialOrgId);
     setOwnedAgents(initialOwnedAgents);
   }, [initialEmail, initialOrgId, initialOwnedAgents]);
 
-  // React to client-side auth changes (sign in/out, token refresh) by pulling
-  // fresh server state, which re-runs the middleware and updates entitlements.
+  // React to client-side auth changes. Refresh the RSC tree for entitlements
+  // on sign-in / token refresh / sign-out — not on the mount INITIAL_SESSION.
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     if (!supabase) return;
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setEmail(session?.user?.email ?? null);
-      router.refresh();
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "INITIAL_SESSION") {
+        if (session?.user?.email) {
+          setEmail(session.user.email);
+        }
+        return;
+      }
+
+      if (event === "SIGNED_OUT" || !session) {
+        setEmail(null);
+        setOrgId(null);
+        setOwnedAgents([]);
+        router.refresh();
+        return;
+      }
+
+      setEmail(session.user?.email ?? null);
+      if (
+        event === "SIGNED_IN" ||
+        event === "TOKEN_REFRESHED" ||
+        event === "USER_UPDATED"
+      ) {
+        router.refresh();
+      }
     });
 
     return () => subscription.unsubscribe();

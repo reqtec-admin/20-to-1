@@ -17,3 +17,12 @@ export function getSupabaseEnv(): { url: string; anonKey: string } | null {
 export function isSupabaseConfigured(): boolean {
   return getSupabaseEnv() !== null;
 }
+
+/**
+ * Optional cookie Domain attribute so auth cookies are shared across the apex
+ * and www hosts (e.g. `.20to1.ai`). Leave unset for localhost / preview URLs.
+ */
+export function getAuthCookieDomain(): string | undefined {
+  const domain = process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN?.trim();
+  return domain || undefined;
+}
