@@ -2,6 +2,8 @@
 node_modules
 .pnp
 .pnp.js
+package-lock.json
+yarn.lock
 
 # build
 .next
@@ -28,3 +30,6 @@ yarn-error.log*
 
 # TypeScript
 next-env.d.ts
+
+# Supabase CLI
+supabase/.temp
