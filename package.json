@@ -2,6 +2,7 @@
   "name": "20-to-1",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,11 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2",
     "next": "15.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@supabase/server": "github:supabase/server",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/react": "^19",
@@ -22,5 +26,10 @@
     "eslint-config-next": "15.0.5",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@supabase/server"
+    ]
   }
 }

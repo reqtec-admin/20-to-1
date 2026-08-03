@@ -2,13 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { getUpgradeFee, getProServiceFee } from "@/lib/checkout-fees";
+import { useSession } from "@/context/SessionProvider";
+import { AuthForm } from "@/components/AuthForm";
+import { getUpgradeFee, getProServiceFee, type UpgradeOption } from "@/lib/checkout-fees";
+
+function planFromUpgrade(upgrade: UpgradeOption): "standard" | "advanced" | "premium" {
+  if (upgrade === "advanced") return "advanced";
+  if (upgrade === "premium") return "premium";
+  return "standard";
+}
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { items, subtotal, clearCart } = useCart();
+  const { signedIn, email, authEnabled } = useSession();
   const [placed, setPlaced] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const totalOneTime = items.reduce(
     (sum, item) => sum + getUpgradeFee(item.upgrade) + getProServiceFee(item.proService),
@@ -34,26 +46,98 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-6xl px-4 py-16 text-center animate-scale-in">
         <h1 className="text-2xl font-semibold text-slate-700">Order placed</h1>
         <p className="mt-2 text-slate-500 font-light">
-          Thank you. This is a demo—no payment was collected.
+          Your agents have been provisioned to your organization.
         </p>
-        <Link
-          href="/products"
-          className="mt-6 inline-block rounded-xl bg-sky-400 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-sky-500 active:scale-[0.98]"
-        >
-          Continue shopping
-        </Link>
+        <div className="mt-6 flex items-center justify-center gap-4">
+          <Link
+            href="/account"
+            className="inline-block rounded-xl bg-sky-400 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-sky-500 active:scale-[0.98]"
+          >
+            View My Agents
+          </Link>
+          <Link
+            href="/products"
+            className="inline-block text-sm text-sky-600 transition-colors duration-200 hover:text-sky-700"
+          >
+            Continue shopping
+          </Link>
+        </div>
       </div>
     );
   }
 
-  function handlePlaceOrder(e: React.FormEvent) {
+  async function handlePlaceOrder(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+
+    // Build the entitlement grant from the cart contents.
+    const agents = items.map((item) => ({
+      slug: item.product.slug,
+      plan: planFromUpgrade(item.upgrade),
+    }));
+
     setLoading(true);
-    setTimeout(() => {
+    try {
+      if (authEnabled) {
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ agents }),
+        });
+        if (!res.ok) {
+          const data = (await res.json().catch(() => null)) as
+            | { error?: string }
+            | null;
+          throw new Error(data?.error ?? "Could not complete checkout.");
+        }
+        // Pull the refreshed session so entitlements appear immediately.
+        router.refresh();
+      } else {
+        // Demo fallback when Supabase is not configured.
+        await new Promise((r) => setTimeout(r, 400));
+      }
       clearCart();
       setPlaced(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
       setLoading(false);
-    }, 600);
+    }
+  }
+
+  // Account creation gate: require a signed-in user before purchase.
+  if (authEnabled && !signedIn) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+        <h1 className="text-2xl font-semibold text-slate-700 animate-fade-in-up">
+          Create your account to continue
+        </h1>
+        <p
+          className="mt-2 text-slate-500 font-light animate-fade-in-up"
+          style={{ animationDelay: "60ms", animationFillMode: "both" }}
+        >
+          Your agents are provisioned to an organization tied to your account.
+          Create one now (or sign in) to complete checkout.
+        </p>
+        <div
+          className="mt-8 animate-fade-in-up"
+          style={{ animationDelay: "120ms", animationFillMode: "both" }}
+        >
+          <AuthForm
+            defaultMode="signup"
+            title="Create your account"
+            subtitle="One account manages your organization and its agents."
+            onAuthenticated={() => router.refresh()}
+          />
+        </div>
+        <Link
+          href="/cart"
+          className="mt-4 block text-center text-sm text-sky-600 transition-colors duration-200 hover:text-sky-700"
+        >
+          Back to cart
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -67,10 +151,19 @@ export default function CheckoutPage() {
         collected.
       </div>
 
+      {signedIn && (
+        <p
+          className="mt-3 text-sm text-slate-500 animate-fade-in-up"
+          style={{ animationDelay: "100ms", animationFillMode: "both" }}
+        >
+          Signed in as <span className="font-medium text-slate-700">{email}</span>. Agents
+          will be added to your organization.
+        </p>
+      )}
+
       <form onSubmit={handlePlaceOrder} className="mt-8 grid gap-8 lg:grid-cols-2">
         <div className="space-y-6">
           {[
-            { id: "email", label: "Email", type: "email", placeholder: "you@example.com" },
             { id: "name", label: "Full name", type: "text", placeholder: "Jane Doe" },
             { id: "address", label: "Address", type: "text", placeholder: "123 Main St, City, State, ZIP" },
           ].map((field, i) => (
@@ -143,6 +236,7 @@ export default function CheckoutPage() {
             <p className="mt-2 text-xs text-slate-400">
               Demo only. No payment is processed.
             </p>
+            {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
             <button
               type="submit"
               disabled={loading}

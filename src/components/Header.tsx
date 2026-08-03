@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useSession } from "@/context/SessionProvider";
 import { useEffect, useRef, useState } from "react";
 
 export function Header() {
   const { itemCount } = useCart();
+  const { signedIn, email, catalog, signOut } = useSession();
   const [popBadge, setPopBadge] = useState(false);
   const prevCountRef = useRef(itemCount);
 
@@ -37,10 +39,23 @@ export function Header() {
           </Link>
           <Link
             href="/investors"
-            className="text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
+            className="hidden text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600 sm:inline"
           >
             Investor Relations
           </Link>
+          {signedIn && (
+            <Link
+              href="/account"
+              className="relative flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
+            >
+              My Agents
+              {catalog.ownedCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-400 px-1.5 text-xs font-medium text-white">
+                  {catalog.ownedCount}
+                </span>
+              )}
+            </Link>
+          )}
           <Link
             href="/cart"
             className="relative flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
@@ -56,6 +71,30 @@ export function Header() {
               </span>
             )}
           </Link>
+          {signedIn ? (
+            <div className="flex items-center gap-3">
+              <span
+                className="hidden max-w-[10rem] truncate text-sm font-light text-slate-400 md:inline"
+                title={email ?? undefined}
+              >
+                {email}
+              </span>
+              <button
+                type="button"
+                onClick={() => signOut()}
+                className="text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/account"
+              className="text-sm font-medium text-slate-500 transition-colors duration-200 hover:text-sky-600"
+            >
+              Sign in
+            </Link>
+          )}
         </nav>
       </div>
     </header>
