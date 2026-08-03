@@ -73,13 +73,44 @@ The Next.js middleware decodes `agents` to feed the entitled catalog to the UI.
 supabase db push           # against a linked project
 # or, for local dev:
 supabase start
-supabase db reset          # applies migrations in order
+supabase db reset          # applies migrations in order, then seed.sql
 ```
 
 ### Option B — SQL editor
 
 Run the files in `migrations/` in numeric order (0001 → 0008) in the
 Supabase SQL editor.
+
+## Seed data (test logins)
+
+`seed.sql` creates two orgs, nine users, teams, seats, and assignments so you
+can exercise entitlement behavior. Shared password for every account:
+**`Test1234!`**
+
+| Email | Role / setup | Expected `agents` claim |
+|-------|--------------|-------------------------|
+| `owner@acme.test` | Acme **owner** | All active Acme agents |
+| `admin@acme.test` | Acme **admin** | All active Acme agents |
+| `brand@acme.test` | Member on Brand team | `brand-manager`, `content-strategist` |
+| `marketing@acme.test` | Member on Marketing team | `marketing-manager`, `social-media-manager` |
+| `seat@acme.test` | Member with direct seat only | `project-manager` |
+| `billing@acme.test` | **billing** (no seats/teams) | `[]` |
+| `member@acme.test` | Plain **member** (no seats/teams) | `[]` |
+| `solo@studio.test` | Solo Studio **owner** | All active Solo agents |
+| `multi@test.dev` | Member of both orgs (Acme active) | Brand team + `product-manager`; switch org → Solo seat |
+
+```bash
+# Local (migrations + seed)
+supabase db reset
+
+# Linked remote test project (seed only; safe to re-run)
+npx supabase@latest db query --linked -f supabase/seed.sql
+# or paste supabase/seed.sql into the SQL editor
+```
+
+After seeding, sign in through the app (or Auth → Users in the dashboard) and
+confirm the JWT `org_role` / `agents` claims match the table above. Use
+`set_active_org('<solo-org-uuid>')` as `multi@test.dev` to flip orgs.
 
 ## Enable the access-token hook
 
