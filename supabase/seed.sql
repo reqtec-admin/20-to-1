@@ -5,7 +5,7 @@
 --
 -- Apply:
 --   Local:   supabase db reset
---   Remote:  npx supabase@latest db query --linked -f supabase/seed.sql
+--   Remote:  pnpm dlx supabase@latest db query --linked -f supabase/seed.sql
 --            (or paste into the Supabase SQL editor)
 
 create extension if not exists "pgcrypto";

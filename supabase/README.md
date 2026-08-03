@@ -104,7 +104,7 @@ can exercise entitlement behavior. Shared password for every account:
 supabase db reset
 
 # Linked remote test project (seed only; safe to re-run)
-npx supabase@latest db query --linked -f supabase/seed.sql
+pnpm dlx supabase@latest db query --linked -f supabase/seed.sql
 # or paste supabase/seed.sql into the SQL editor
 ```
 

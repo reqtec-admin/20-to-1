@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@supabase/server':
-        specifier: github:supabase/server
-        version: https://codeload.github.com/supabase/server/tar.gz/5b0f3d6e8e49892d719da05822d0d66c05054fed(@supabase/supabase-js@2.111.0)
       '@supabase/ssr':
         specifier: ^0.12.0
         version: 0.12.4(@supabase/supabase-js@2.111.0)
@@ -27,6 +24,9 @@ importers:
         specifier: ^19.0.0
         version: 19.2.8(react@19.2.8)
     devDependencies:
+      '@supabase/server':
+        specifier: github:supabase/server
+        version: https://codeload.github.com/supabase/server/tar.gz/5b0f3d6e8e49892d719da05822d0d66c05054fed(@supabase/supabase-js@2.111.0)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.3

@@ -36,8 +36,8 @@ Set up: apply the migrations in `supabase/migrations/` (see `supabase/README.md`
 ## Run
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -45,8 +45,8 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Build
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
 ## Deploy to Vercel
@@ -55,16 +55,16 @@ npm start
 
 1. Go to [vercel.com](https://vercel.com) and sign in (GitHub/GitLab/Bitbucket).
 2. **Add New** → **Project** and import this repository (root is the app).
-3. Leave **Framework Preset** as Next.js and build settings as default.
+3. Leave **Framework Preset** as Next.js. Vercel will detect `pnpm-lock.yaml` and use pnpm automatically.
 4. (Optional) Add environment variable `NEXT_PUBLIC_PASSCODE` = your secret passcode (default is `demo`).
 5. To enable accounts, add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (see `.env.example` and `supabase/README.md`).
-5. Click **Deploy**.
+6. Click **Deploy**.
 
 ### From CLI
 
 ```bash
-npx vercel login
-npx vercel
+pnpm dlx vercel login
+pnpm dlx vercel
 ```
 
 To set the passcode in production, add `NEXT_PUBLIC_PASSCODE` in the Vercel project **Settings → Environment Variables**.
