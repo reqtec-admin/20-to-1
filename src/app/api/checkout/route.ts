@@ -12,6 +12,10 @@ const VALID_PLANS = new Set(["standard", "advanced", "premium"]);
  * organization on first purchase and grants the purchased agents via the
  * `provision_checkout` RPC. The agent entitlements then flow into the JWT and
  * are surfaced to the UI on the next session refresh.
+ *
+ * When NEXT_PUBLIC_DEMO=false, live payments go through Stripe Checkout first
+ * (`/api/stripe/checkout`); this route is then called after payment succeeds
+ * (success page) to grant entitlements.
  */
 export async function POST(request: Request) {
   const supabase = await getSupabaseServerClient();

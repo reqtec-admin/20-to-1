@@ -6,13 +6,11 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useSession } from "@/context/SessionProvider";
 import { AuthForm } from "@/components/AuthForm";
-import { getUpgradeFee, getProServiceFee, type UpgradeOption } from "@/lib/checkout-fees";
+import { getUpgradeFee, getProServiceFee } from "@/lib/checkout-fees";
+import { planFromUpgrade, saveCartToSession } from "@/lib/cart-storage";
+import { isDemoMode } from "@/lib/payment-config";
 
-function planFromUpgrade(upgrade: UpgradeOption): "standard" | "advanced" | "premium" {
-  if (upgrade === "advanced") return "advanced";
-  if (upgrade === "premium") return "premium";
-  return "standard";
-}
+const demoMode = isDemoMode();
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -46,7 +44,9 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-6xl px-4 py-16 text-center animate-scale-in">
         <h1 className="text-2xl font-semibold text-slate-700">Order placed</h1>
         <p className="mt-2 text-slate-500 font-light">
-          Your agents have been provisioned to your organization.
+          {demoMode
+            ? "Your agents have been provisioned to your organization. (Demo — no payment collected.)"
+            : "Your agents have been provisioned to your organization."}
         </p>
         <div className="mt-6 flex items-center justify-center gap-4">
           <Link
@@ -70,7 +70,6 @@ export default function CheckoutPage() {
     e.preventDefault();
     setError(null);
 
-    // Build the entitlement grant from the cart contents.
     const agents = items.map((item) => ({
       slug: item.product.slug,
       plan: planFromUpgrade(item.upgrade),
@@ -90,10 +89,8 @@ export default function CheckoutPage() {
             | null;
           throw new Error(data?.error ?? "Could not complete checkout.");
         }
-        // Pull the refreshed session so entitlements appear immediately.
         router.refresh();
       } else {
-        // Demo fallback when Supabase is not configured.
         await new Promise((r) => setTimeout(r, 400));
       }
       clearCart();
@@ -101,6 +98,39 @@ export default function CheckoutPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleStripeCheckout(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      saveCartToSession(items);
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email ?? undefined,
+          items: items.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+            upgrade: item.upgrade,
+            proService: item.proService,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Unable to start checkout");
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to start checkout");
       setLoading(false);
     }
   }
@@ -140,16 +170,20 @@ export default function CheckoutPage() {
     );
   }
 
+  const handleSubmit = demoMode ? handlePlaceOrder : handleStripeCheckout;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold text-slate-700 animate-fade-in-up">Checkout</h1>
-      <div
-        className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 animate-fade-in-up"
-        style={{ animationDelay: "80ms", animationFillMode: "both" }}
-      >
-        Demo only: this checkout is for demonstration purposes only. No real payments will be
-        collected.
-      </div>
+      {demoMode && (
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 animate-fade-in-up"
+          style={{ animationDelay: "80ms", animationFillMode: "both" }}
+        >
+          Demo only: this checkout is for demonstration purposes only. No real payments will be
+          collected.
+        </div>
+      )}
 
       {signedIn && (
         <p
@@ -161,7 +195,7 @@ export default function CheckoutPage() {
         </p>
       )}
 
-      <form onSubmit={handlePlaceOrder} className="mt-8 grid gap-8 lg:grid-cols-2">
+      <form onSubmit={handleSubmit} className="mt-8 grid gap-8 lg:grid-cols-2">
         <div className="space-y-6">
           {[
             { id: "name", label: "Full name", type: "text", placeholder: "Jane Doe" },
@@ -233,16 +267,28 @@ export default function CheckoutPage() {
                 </span>
               </div>
             </div>
-            <p className="mt-2 text-xs text-slate-400">
-              Demo only. No payment is processed.
-            </p>
+            {demoMode ? (
+              <p className="mt-2 text-xs text-slate-400">
+                Demo only. No payment is processed.
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-slate-500">
+                Secure payment powered by Stripe. Billing address collected at checkout.
+              </p>
+            )}
             {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
             <button
               type="submit"
               disabled={loading}
               className="mt-6 w-full rounded-xl bg-sky-400 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-sky-500 disabled:opacity-70 active:scale-[0.99]"
             >
-              {loading ? "Placing order…" : "Place order"}
+              {loading
+                ? demoMode
+                  ? "Placing order…"
+                  : "Redirecting to Stripe…"
+                : demoMode
+                  ? "Place order"
+                  : "Pay with Stripe"}
             </button>
             <Link
               href="/cart"
