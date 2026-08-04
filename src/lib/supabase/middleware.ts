@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { getSupabaseEnv } from "./env";
+import { getAuthCookieDomain, getSupabaseEnv } from "./env";
 
 export const OWNED_AGENTS_HEADER = "x-owned-agents";
 export const USER_EMAIL_HEADER = "x-user-email";
@@ -35,9 +35,12 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   // Accumulate auth cookies set during session refresh so we can re-apply them
   // to the final response (which we rebuild after mutating request headers).
-  const pendingCookies: { name: string; value: string; options: CookieOptions }[] = [];
+  const pendingCookies: { name: string; value: string; options: CookieOptions }[] =
+    [];
+  const cookieDomain = getAuthCookieDomain();
 
   const supabase = createServerClient(env.url, env.anonKey, {
+    ...(cookieDomain ? { cookieOptions: { domain: cookieDomain } } : {}),
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -45,7 +48,11 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value, options }) => {
           request.cookies.set(name, value);
-          pendingCookies.push({ name, value, options });
+          pendingCookies.push({
+            name,
+            value,
+            options: cookieDomain ? { ...options, domain: cookieDomain } : options,
+          });
         });
       },
     },
@@ -56,10 +63,13 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Clear any inbound copies of these headers so callers can't spoof them.
-  request.headers.delete(OWNED_AGENTS_HEADER);
-  request.headers.delete(USER_EMAIL_HEADER);
-  request.headers.delete(ORG_ID_HEADER);
+  // Next.js only forwards headers via `request: { headers }` — passing the
+  // full NextRequest object does not reliably expose middleware-set headers
+  // to `headers()` in Server Components.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.delete(OWNED_AGENTS_HEADER);
+  requestHeaders.delete(USER_EMAIL_HEADER);
+  requestHeaders.delete(ORG_ID_HEADER);
 
   if (user) {
     const {
@@ -79,12 +89,14 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
       }
     }
 
-    request.headers.set(OWNED_AGENTS_HEADER, JSON.stringify(ownedAgents));
-    request.headers.set(USER_EMAIL_HEADER, user.email ?? "");
-    request.headers.set(ORG_ID_HEADER, orgId);
+    requestHeaders.set(OWNED_AGENTS_HEADER, JSON.stringify(ownedAgents));
+    requestHeaders.set(USER_EMAIL_HEADER, user.email ?? "");
+    requestHeaders.set(ORG_ID_HEADER, orgId);
   }
 
-  const response = NextResponse.next({ request });
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
   pendingCookies.forEach(({ name, value, options }) =>
     response.cookies.set(name, value, options)
   );
